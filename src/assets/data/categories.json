@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Electronics",
+    "slug": "electronics",
+    "description": "Latest electronic gadgets and devices",
+    "icon": "💻",
+    "isActive": true
+  },
+  {
+    "id": 2,
+    "name": "Clothing",
+    "slug": "clothing",
+    "description": "Trendy fashion and apparel",
+    "icon": "👕",
+    "isActive": true
+  },
+  {
+    "id": 3,
+    "name": "Books",
+    "slug": "books",
+    "description": "Books across all genres",
+    "icon": "📚",
+    "isActive": true
+  },
+  {
+    "id": 4,
+    "name": "Home & Kitchen",
+    "slug": "home-kitchen",
+    "description": "Everything for your home",
+    "icon": "🏠",
+    "isActive": true
+  },
+  {
+    "id": 5,
+    "name": "Sports & Outdoors",
+    "slug": "sports-outdoors",
+    "description": "Gear up for adventure",
+    "icon": "⚽",
+    "isActive": true
+  }
+]

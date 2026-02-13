@@ -1,0 +1,123 @@
+<div class="page-wrapper container">
+  @if (loading()) {
+    <div class="loading-spinner"></div>
+  } @else if (order(); as o) {
+    <div class="detail-header">
+      <div>
+        <a routerLink="/orders" class="back-link">← Back to Orders</a>
+        <h1 class="page-title">Order {{ o.orderNumber }}</h1>
+        <p class="order-date">
+          Placed on {{ o.createdAt | date:'longDate' }}
+        </p>
+      </div>
+      <span class="badge badge-lg" [class]="getStatusBadgeClass(o.status)">
+        {{ o.status | orderStatus }}
+      </span>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    @if (o.status !== 'cancelled') {
+      <div class="progress-section card">
+        <div class="progress-bar">
+          <div class="progress-fill"
+               [style.width.%]="getProgressPercentage(o.status)">
+          </div>
+        </div>
+        <div class="progress-steps">
+          <span [class.active]="getProgressPercentage(o.status) >= 16">
+            Pending
+          </span>
+          <span [class.active]="getProgressPercentage(o.status) >= 33">
+            Confirmed
+          </span>
+          <span [class.active]="getProgressPercentage(o.status) >= 50">
+            Processing
+          </span>
+          <span [class.active]="getProgressPercentage(o.status) >= 75">
+            Shipped
+          </span>
+          <span [class.active]="getProgressPercentage(o.status) >= 100">
+            Delivered
+          </span>
+        </div>
+      </div>
+    }
+
+    <div class="detail-grid">
+      <!-- ORDER ITEMS -->
+      <div class="items-section card">
+        <h3>Order Items</h3>
+        @for (item of o.items; track item.productId) {
+          <div class="order-item">
+            <img [src]="item.productImage" [alt]="item.productName" />
+            <div class="item-info">
+              <strong>{{ item.productName }}</strong>
+              <span>Qty: {{ item.quantity }}
+                    × {{ item.price | appCurrency }}</span>
+            </div>
+            <span class="item-total price">
+              {{ item.total | appCurrency }}
+            </span>
+          </div>
+        }
+
+        <div class="items-summary">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>{{ o.subtotal | appCurrency }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Tax</span>
+            <span>{{ o.tax | appCurrency }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span>
+              @if (o.shippingCost === 0) {
+                <span class="free-shipping">FREE</span>
+              } @else {
+                {{ o.shippingCost | appCurrency }}
+              }
+            </span>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-row total-row">
+            <span>Total</span>
+            <span>{{ o.totalAmount | appCurrency }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOMER & SHIPPING INFO -->
+      <div class="info-cards">
+        <div class="card info-card">
+          <h3>👤 Customer Info</h3>
+          <p><strong>{{ o.customerName }}</strong></p>
+          <p>{{ o.customerEmail }}</p>
+          <p>{{ o.customerPhone }}</p>
+        </div>
+
+        <div class="card info-card">
+          <h3>📍 Shipping Address</h3>
+          <p>{{ o.shippingAddress.fullName }}</p>
+          <p>{{ o.shippingAddress.addressLine1 }}</p>
+          @if (o.shippingAddress.addressLine2) {
+            <p>{{ o.shippingAddress.addressLine2 }}</p>
+          }
+          <p>{{ o.shippingAddress.city }}, {{ o.shippingAddress.state }}
+             {{ o.shippingAddress.zipCode }}</p>
+          <p>{{ o.shippingAddress.country }}</p>
+        </div>
+
+        <div class="card info-card">
+          <h3>💳 Payment</h3>
+          <p>{{ o.paymentMethod }}</p>
+          @if (o.notes) {
+            <h4>📝 Notes</h4>
+            <p>{{ o.notes }}</p>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

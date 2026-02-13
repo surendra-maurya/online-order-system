@@ -1,0 +1,163 @@
+<div class="page-wrapper container">
+  <h1 class="page-title">All Products</h1>
+
+  <!-- FILTERS BAR -->
+  <div class="filters-bar card">
+    <div class="filter-group">
+      <input type="text"
+             class="form-control search-input"
+             placeholder="🔍 Search products..."
+             [ngModel]="searchQuery()"
+             (ngModelChange)="onSearchChange($event)" />
+    </div>
+
+    <div class="filter-group">
+      <select class="form-control"
+              [ngModel]="selectedCategory()"
+              (ngModelChange)="onCategoryChange($event ? +$event : null)">
+        <option [ngValue]="null">All Categories</option>
+        @for (cat of categories(); track cat.id) {
+          <option [ngValue]="cat.id">{{ cat.icon }} {{ cat.name }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <select class="form-control"
+              [ngModel]="sortBy()"
+              (ngModelChange)="onSortChange($event)">
+        <option value="name-asc">Name: A → Z</option>
+        <option value="name-desc">Name: Z → A</option>
+        <option value="price-asc">Price: Low → High</option>
+        <option value="price-desc">Price: High → Low</option>
+        <option value="rating">Top Rated</option>
+      </select>
+    </div>
+
+    <button class="btn btn-icon" (click)="toggleView()"
+            [title]="viewMode() === 'grid' ? 'List View' : 'Grid View'">
+      @if (viewMode() === 'grid') { 📋 } @else { 🔲 }
+    </button>
+
+    <button class="btn btn-secondary btn-sm" (click)="clearFilters()">
+      Clear
+    </button>
+  </div>
+
+  <!-- RESULTS COUNT -->
+  <p class="results-info">
+    Showing <strong>{{ resultCount() }}</strong> products
+    @if (searchQuery()) {
+      for "<em>{{ searchQuery() }}</em>"
+    }
+  </p>
+
+  @if (loading()) {
+    <div class="loading-spinner"></div>
+  } @else {
+    <!-- GRID VIEW -->
+    @if (viewMode() === 'grid') {
+      <div class="grid grid-4">
+        @for (product of filteredProducts(); track product.id) {
+          <div class="product-card card card-hover">
+            @if (product.discount > 0) {
+              <span class="discount-tag">-{{ product.discount }}%</span>
+            }
+            <a [routerLink]="['/products', product.slug]">
+              <img [src]="product.image"
+                   [alt]="product.name"
+                   class="product-image" />
+            </a>
+            <div class="product-info">
+              <span class="product-category">{{ product.categoryName }}</span>
+              <a [routerLink]="['/products', product.slug]"
+                 class="product-name">
+                {{ product.name }}
+              </a>
+              <div class="product-rating">
+                <span class="star-rating">
+                  {{ product.rating | starRating }}
+                </span>
+                <span class="review-count">({{ product.reviewCount }})</span>
+              </div>
+              <span [appStockStatus]="product.stock"></span>
+              <div class="product-price">
+                <span class="price">{{ product.price | appCurrency }}</span>
+                @if (product.originalPrice > product.price) {
+                  <span class="original-price">
+                    {{ product.originalPrice | appCurrency }}
+                  </span>
+                }
+              </div>
+              <button class="btn btn-primary btn-sm"
+                      (click)="addToCart(product, $event)"
+                      [disabled]="product.stock === 0">
+                @if (product.stock === 0) {
+                  Out of Stock
+                } @else {
+                  Add to Cart
+                }
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <div class="empty-icon">🔍</div>
+            <h3>No products found</h3>
+            <p>Try adjusting your search or filter criteria.</p>
+            <button class="btn btn-primary" (click)="clearFilters()">
+              Clear Filters
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- LIST VIEW -->
+    @if (viewMode() === 'list') {
+      <div class="list-view">
+        @for (product of filteredProducts(); track product.id) {
+          <div class="list-item card card-hover">
+            <a [routerLink]="['/products', product.slug]">
+              <img [src]="product.image"
+                   [alt]="product.name"
+                   class="list-image" />
+            </a>
+            <div class="list-info">
+              <span class="product-category">{{ product.categoryName }}</span>
+              <a [routerLink]="['/products', product.slug]"
+                 class="product-name">
+                {{ product.name }}
+              </a>
+              <p class="product-desc">
+                {{ product.shortDescription | truncate:100 }}
+              </p>
+              <div class="product-rating">
+                <span class="star-rating">
+                  {{ product.rating | starRating }}
+                </span>
+                <span class="review-count">({{ product.reviewCount }})</span>
+              </div>
+              <span [appStockStatus]="product.stock"></span>
+            </div>
+            <div class="list-actions">
+              <div class="product-price">
+                <span class="price">{{ product.price | appCurrency }}</span>
+                @if (product.originalPrice > product.price) {
+                  <span class="original-price">
+                    {{ product.originalPrice | appCurrency }}
+                  </span>
+                }
+              </div>
+              <button class="btn btn-primary btn-sm"
+                      (click)="addToCart(product, $event)"
+                      [disabled]="product.stock === 0">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

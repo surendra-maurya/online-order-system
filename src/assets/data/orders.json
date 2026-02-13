@@ -1,0 +1,123 @@
+[
+  {
+    "id": "ord-001",
+    "orderNumber": "ORD-2025-0001",
+    "items": [
+      {
+        "productId": 1,
+        "productName": "Wireless Bluetooth Headphones",
+        "productImage": "https://placehold.co/400x400/2563eb/white?text=Headphones",
+        "price": 79.99,
+        "quantity": 1,
+        "total": 79.99
+      },
+      {
+        "productId": 4,
+        "productName": "JavaScript: The Definitive Guide",
+        "productImage": "https://placehold.co/400x400/ea580c/white?text=JS+Book",
+        "price": 39.99,
+        "quantity": 2,
+        "total": 79.98
+      }
+    ],
+    "subtotal": 159.97,
+    "tax": 12.80,
+    "shippingCost": 5.99,
+    "totalAmount": 178.76,
+    "status": "delivered",
+    "shippingAddress": {
+      "fullName": "John Doe",
+      "addressLine1": "123 Main Street",
+      "addressLine2": "Apt 4B",
+      "city": "New York",
+      "state": "NY",
+      "zipCode": "10001",
+      "country": "United States"
+    },
+    "paymentMethod": "Credit Card",
+    "customerName": "John Doe",
+    "customerEmail": "john@example.com",
+    "customerPhone": "+1-555-0101",
+    "notes": "Please leave at door",
+    "createdAt": "2025-03-01T10:30:00Z",
+    "updatedAt": "2025-03-05T14:00:00Z"
+  },
+  {
+    "id": "ord-002",
+    "orderNumber": "ORD-2025-0002",
+    "items": [
+      {
+        "productId": 2,
+        "productName": "Smart Watch Pro",
+        "productImage": "https://placehold.co/400x400/7c3aed/white?text=SmartWatch",
+        "price": 199.99,
+        "quantity": 1,
+        "total": 199.99
+      }
+    ],
+    "subtotal": 199.99,
+    "tax": 16.00,
+    "shippingCost": 0,
+    "totalAmount": 215.99,
+    "status": "shipped",
+    "shippingAddress": {
+      "fullName": "Jane Smith",
+      "addressLine1": "456 Oak Avenue",
+      "addressLine2": "",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zipCode": "90001",
+      "country": "United States"
+    },
+    "paymentMethod": "PayPal",
+    "customerName": "Jane Smith",
+    "customerEmail": "jane@example.com",
+    "customerPhone": "+1-555-0102",
+    "notes": "",
+    "createdAt": "2025-03-10T08:00:00Z",
+    "updatedAt": "2025-03-12T16:30:00Z"
+  },
+  {
+    "id": "ord-003",
+    "orderNumber": "ORD-2025-0003",
+    "items": [
+      {
+        "productId": 10,
+        "productName": "Running Shoes UltraBoost",
+        "productImage": "https://placehold.co/400x400/f59e0b/white?text=Shoes",
+        "price": 129.99,
+        "quantity": 1,
+        "total": 129.99
+      },
+      {
+        "productId": 6,
+        "productName": "Yoga Mat Premium",
+        "productImage": "https://placehold.co/400x400/d946ef/white?text=Yoga+Mat",
+        "price": 34.99,
+        "quantity": 2,
+        "total": 69.98
+      }
+    ],
+    "subtotal": 199.97,
+    "tax": 16.00,
+    "shippingCost": 5.99,
+    "totalAmount": 221.96,
+    "status": "processing",
+    "shippingAddress": {
+      "fullName": "Bob Wilson",
+      "addressLine1": "789 Pine Road",
+      "addressLine2": "Suite 100",
+      "city": "Chicago",
+      "state": "IL",
+      "zipCode": "60601",
+      "country": "United States"
+    },
+    "paymentMethod": "Credit Card",
+    "customerName": "Bob Wilson",
+    "customerEmail": "bob@example.com",
+    "customerPhone": "+1-555-0103",
+    "notes": "Gift wrapping please",
+    "createdAt": "2025-03-18T15:45:00Z",
+    "updatedAt": "2025-03-18T15:45:00Z"
+  }
+]

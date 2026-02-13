@@ -1,0 +1,270 @@
+<div class="page-wrapper container">
+  <h1 class="page-title">Checkout</h1>
+
+  @if (cartService.isEmpty()) {
+    <div class="empty-state card">
+      <div class="empty-icon">🛒</div>
+      <h3>Your cart is empty</h3>
+      <p>Add some products before checking out.</p>
+      <a routerLink="/products" class="btn btn-primary">Browse Products</a>
+    </div>
+  } @else {
+    <!-- PROGRESS STEPS -->
+    <div class="stepper">
+      @for (step of ['Customer Info', 'Shipping', 'Review & Pay'];
+            track step; let i = $index) {
+        <div class="step" [class.active]="currentStep() === i + 1"
+             [class.completed]="currentStep() > i + 1">
+          <span class="step-number">
+            @if (currentStep() > i + 1) { ✓ } @else { {{ i + 1 }} }
+          </span>
+          <span class="step-label">{{ step }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="checkout-layout">
+      <form [formGroup]="checkoutForm" (ngSubmit)="placeOrder()"
+            class="checkout-form card">
+
+        <!-- STEP 1: Customer Info -->
+        @if (currentStep() === 1) {
+          <h2>Customer Information</h2>
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input formControlName="customerName"
+                   class="form-control"
+                   [class.is-invalid]="isFieldInvalid('customerName')"
+                   placeholder="John Doe" />
+            @if (isFieldInvalid('customerName')) {
+              <span class="form-error">
+                {{ getFieldError('customerName') }}
+              </span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email Address *</label>
+            <input formControlName="customerEmail"
+                   type="email"
+                   class="form-control"
+                   [class.is-invalid]="isFieldInvalid('customerEmail')"
+                   placeholder="john@example.com" />
+            @if (isFieldInvalid('customerEmail')) {
+              <span class="form-error">
+                {{ getFieldError('customerEmail') }}
+              </span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Phone Number *</label>
+            <input formControlName="customerPhone"
+                   class="form-control"
+                   [class.is-invalid]="isFieldInvalid('customerPhone')"
+                   placeholder="+1-555-0101" />
+            @if (isFieldInvalid('customerPhone')) {
+              <span class="form-error">
+                {{ getFieldError('customerPhone') }}
+              </span>
+            }
+          </div>
+
+          <div class="form-actions">
+            <a routerLink="/cart" class="btn btn-secondary">← Back to Cart</a>
+            <button type="button" class="btn btn-primary"
+                    (click)="nextStep()">
+              Continue →
+            </button>
+          </div>
+        }
+
+        <!-- STEP 2: Shipping -->
+        @if (currentStep() === 2) {
+          <h2>Shipping Address</h2>
+          <div class="form-group">
+            <label class="form-label">Recipient Name *</label>
+            <input formControlName="fullName"
+                   class="form-control"
+                   [class.is-invalid]="isFieldInvalid('fullName')" />
+            @if (isFieldInvalid('fullName')) {
+              <span class="form-error">{{ getFieldError('fullName') }}</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Address Line 1 *</label>
+            <input formControlName="addressLine1"
+                   class="form-control"
+                   [class.is-invalid]="isFieldInvalid('addressLine1')"
+                   placeholder="123 Main Street" />
+            @if (isFieldInvalid('addressLine1')) {
+              <span class="form-error">
+                {{ getFieldError('addressLine1') }}
+              </span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Address Line 2</label>
+            <input formControlName="addressLine2"
+                   class="form-control"
+                   placeholder="Apt, Suite, Floor (optional)" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">City *</label>
+              <input formControlName="city"
+                     class="form-control"
+                     [class.is-invalid]="isFieldInvalid('city')" />
+              @if (isFieldInvalid('city')) {
+                <span class="form-error">{{ getFieldError('city') }}</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">State *</label>
+              <input formControlName="state"
+                     class="form-control"
+                     [class.is-invalid]="isFieldInvalid('state')" />
+              @if (isFieldInvalid('state')) {
+                <span class="form-error">{{ getFieldError('state') }}</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">ZIP Code *</label>
+              <input formControlName="zipCode"
+                     class="form-control"
+                     [class.is-invalid]="isFieldInvalid('zipCode')"
+                     placeholder="10001" />
+              @if (isFieldInvalid('zipCode')) {
+                <span class="form-error">{{ getFieldError('zipCode') }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Country</label>
+            <select formControlName="country" class="form-control">
+              <option>United States</option>
+              <option>Canada</option>
+              <option>United Kingdom</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary"
+                    (click)="prevStep()">
+              ← Back
+            </button>
+            <button type="button" class="btn btn-primary"
+                    (click)="nextStep()">
+              Continue →
+            </button>
+          </div>
+        }
+
+        <!-- STEP 3: Review & Pay -->
+        @if (currentStep() === 3) {
+          <h2>Review & Payment</h2>
+
+          <!-- Order Items Review -->
+          <div class="review-items">
+            @for (item of cartService.items(); track item.product.id) {
+              <div class="review-item">
+                <img [src]="item.product.image" [alt]="item.product.name" />
+                <div>
+                  <strong>{{ item.product.name }}</strong>
+                  <p>Qty: {{ item.quantity }}
+                    × {{ item.product.price | appCurrency }}
+                  </p>
+                </div>
+                <span class="price">
+                  {{ item.product.price * item.quantity | appCurrency }}
+                </span>
+              </div>
+            }
+          </div>
+
+          <!-- Payment Method -->
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <div class="payment-options">
+              <label class="radio-option">
+                <input type="radio" formControlName="paymentMethod"
+                       value="credit-card" />
+                <span>💳 Credit Card</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" formControlName="paymentMethod"
+                       value="paypal" />
+                <span>🅿️ PayPal</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" formControlName="paymentMethod"
+                       value="cod" />
+                <span>💵 Cash on Delivery</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Order Notes (Optional)</label>
+            <textarea formControlName="notes"
+                      class="form-control"
+                      rows="3"
+                      placeholder="Special instructions...">
+            </textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary"
+                    (click)="prevStep()">
+              ← Back
+            </button>
+            <button type="submit"
+                    class="btn btn-success btn-lg"
+                    [disabled]="submitting()">
+              @if (submitting()) {
+                ⏳ Placing Order...
+              } @else {
+                ✅ Place Order
+                ({{ cartService.totalAmount() | appCurrency }})
+              }
+            </button>
+          </div>
+        }
+      </form>
+
+      <!-- SIDEBAR SUMMARY -->
+      <div class="sidebar-summary card">
+        <h3>Order Summary</h3>
+        <div class="summary-row">
+          <span>Items ({{ cartService.itemCount() }})</span>
+          <span>{{ cartService.subtotal() | appCurrency }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax</span>
+          <span>{{ cartService.tax() | appCurrency }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span>
+            @if (cartService.shippingCost() === 0) {
+              <span class="free-shipping">FREE</span>
+            } @else {
+              {{ cartService.shippingCost() | appCurrency }}
+            }
+          </span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-row total-row">
+          <span>Total</span>
+          <span>{{ cartService.totalAmount() | appCurrency }}</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>

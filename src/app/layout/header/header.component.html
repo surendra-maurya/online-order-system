@@ -1,0 +1,67 @@
+<header class="header">
+  <div class="container header-inner">
+    <!-- Logo -->
+    <a routerLink="/" class="logo" (click)="closeMobileMenu()">
+      <span class="logo-icon">🛒</span>
+      <span class="logo-text">OrderHub</span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="nav-desktop">
+      <a routerLink="/" routerLinkActive="active"
+         [routerLinkActiveOptions]="{exact: true}">
+        Home
+      </a>
+      <a routerLink="/products" routerLinkActive="active">
+        Products
+      </a>
+      <a routerLink="/orders" routerLinkActive="active">
+        My Orders
+      </a>
+      <a routerLink="/admin" routerLinkActive="active">
+        Admin
+      </a>
+    </nav>
+
+    <!-- Cart & Mobile Toggle -->
+    <div class="header-actions">
+      <a routerLink="/cart" class="cart-btn" (click)="closeMobileMenu()">
+        🛒
+        @if (cartService.itemCount() > 0) {
+          <span class="cart-badge">{{ cartService.itemCount() }}</span>
+        }
+      </a>
+
+      <button class="mobile-toggle" (click)="toggleMobileMenu()">
+        @if (mobileMenuOpen()) {
+          ✕
+        } @else {
+          ☰
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Nav -->
+  @if (mobileMenuOpen()) {
+    <nav class="nav-mobile">
+      <a routerLink="/" routerLinkActive="active"
+         [routerLinkActiveOptions]="{exact: true}"
+         (click)="closeMobileMenu()">
+        Home
+      </a>
+      <a routerLink="/products" routerLinkActive="active"
+         (click)="closeMobileMenu()">
+        Products
+      </a>
+      <a routerLink="/orders" routerLinkActive="active"
+         (click)="closeMobileMenu()">
+        My Orders
+      </a>
+      <a routerLink="/admin" routerLinkActive="active"
+         (click)="closeMobileMenu()">
+        Admin
+      </a>
+    </nav>
+  }
+</header>

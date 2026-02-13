@@ -1,0 +1,136 @@
+<div class="page-wrapper container">
+  <h1 class="page-title">⚙️ Admin Dashboard</h1>
+
+  @if (loading()) {
+    <div class="loading-spinner"></div>
+  } @else {
+    <!-- STATS CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+          <span class="stat-value">
+            {{ totalRevenue() | appCurrency }}
+          </span>
+          <span class="stat-label">Total Revenue</span>
+        </div>
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ totalOrders() }}</span>
+          <span class="stat-label">Total Orders</span>
+        </div>
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ pendingOrders() }}</span>
+          <span class="stat-label">Pending Orders</span>
+        </div>
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon">🏷️</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ totalProducts() }}</span>
+          <span class="stat-label">Products</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT ORDERS TABLE -->
+    <div class="section card">
+      <h3 class="section-heading">Recent Orders</h3>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of recentOrders(); track order.id) {
+              <tr>
+                <td>
+                  <a [routerLink]="['/orders', order.id]"
+                     class="order-link">
+                    {{ order.orderNumber }}
+                  </a>
+                </td>
+                <td>{{ order.customerName }}</td>
+                <td>{{ order.items.length }}</td>
+                <td class="price">
+                  {{ order.totalAmount | appCurrency }}
+                </td>
+                <td>
+                  <span class="badge"
+                        [class]="getStatusBadgeClass(order.status)">
+                    {{ order.status | orderStatus }}
+                  </span>
+                </td>
+                <td>{{ order.createdAt | timeAgo }}</td>
+                <td>
+                  <select class="form-control status-select"
+                          [value]="order.status"
+                          (change)="updateStatus(
+                            order.id,
+                            $any($event.target).value
+                          )">
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="processing">Processing</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LOW STOCK ALERT (using @defer) -->
+    @defer (on viewport) {
+      @if (lowStockProducts().length > 0) {
+        <div class="section card low-stock-section">
+          <h3 class="section-heading">⚠️ Low Stock Alert</h3>
+          <div class="low-stock-grid">
+            @for (product of lowStockProducts(); track product.id) {
+              <div class="low-stock-item">
+                <img [src]="product.image" [alt]="product.name" />
+                <div>
+                  <strong>{{ product.name }}</strong>
+                  <p class="stock-count"
+                     [style.color]="product.stock === 0
+                       ? 'var(--danger)' : 'var(--warning)'">
+                    @if (product.stock === 0) {
+                      OUT OF STOCK
+                    } @else {
+                      Only {{ product.stock }} left
+                    }
+                  </p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    } @loading {
+      <div class="loading-spinner"></div>
+    } @placeholder {
+      <div class="text-center mt-3">
+        <p class="text-secondary">
+          Scroll down to see low stock alerts...
+        </p>
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,118 @@
+<div class="page-wrapper container">
+  <h1 class="page-title">🛒 Shopping Cart</h1>
+
+  @if (cartService.isEmpty()) {
+    <div class="empty-state card">
+      <div class="empty-icon">🛒</div>
+      <h3>Your cart is empty</h3>
+      <p>Looks like you haven't added any items to your cart yet.</p>
+      <a routerLink="/products" class="btn btn-primary">
+        Browse Products
+      </a>
+    </div>
+  } @else {
+    <div class="cart-layout">
+      <!-- CART ITEMS -->
+      <div class="cart-items">
+        <div class="cart-header">
+          <span>{{ cartService.itemCount() }} items in your cart</span>
+          <button class="btn btn-secondary btn-sm" (click)="clearCart()">
+            🗑️ Clear Cart
+          </button>
+        </div>
+
+        @for (item of cartService.items(); track item.product.id) {
+          <div class="cart-item card">
+            <img [src]="item.product.image"
+                 [alt]="item.product.name"
+                 class="item-image" />
+
+            <div class="item-info">
+              <a [routerLink]="['/products', item.product.slug]"
+                 class="item-name">
+                {{ item.product.name }}
+              </a>
+              <span class="item-category">{{ item.product.categoryName }}</span>
+              <span class="item-price">
+                {{ item.product.price | appCurrency }} each
+              </span>
+            </div>
+
+            <div class="item-quantity">
+              <button class="btn btn-secondary btn-sm"
+                      (click)="decrement(item.product.id)">
+                −
+              </button>
+              <span class="qty">{{ item.quantity }}</span>
+              <button class="btn btn-secondary btn-sm"
+                      (click)="increment(item.product.id)"
+                      [disabled]="item.quantity >= item.product.stock">
+                +
+              </button>
+            </div>
+
+            <div class="item-total">
+              <span class="price">
+                {{ item.product.price * item.quantity | appCurrency }}
+              </span>
+            </div>
+
+            <button class="btn btn-icon remove-btn"
+                    (click)="remove(item.product.id, item.product.name)"
+                    title="Remove">
+              🗑️
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- ORDER SUMMARY -->
+      <div class="order-summary card">
+        <h3>Order Summary</h3>
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>{{ cartService.subtotal() | appCurrency }}</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Tax (8%)</span>
+          <span>{{ cartService.tax() | appCurrency }}</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span>
+            @if (cartService.shippingCost() === 0) {
+              <span class="free-shipping">FREE</span>
+            } @else {
+              {{ cartService.shippingCost() | appCurrency }}
+            }
+          </span>
+        </div>
+
+        @if (cartService.subtotal() < 100) {
+          <div class="shipping-notice">
+            💡 Add {{ 100 - cartService.subtotal() | appCurrency }}
+            more for free shipping!
+          </div>
+        }
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-row total-row">
+          <span>Total</span>
+          <span>{{ cartService.totalAmount() | appCurrency }}</span>
+        </div>
+
+        <a routerLink="/checkout" class="btn btn-primary btn-lg checkout-btn">
+          Proceed to Checkout →
+        </a>
+
+        <a routerLink="/products" class="btn btn-secondary continue-btn">
+          ← Continue Shopping
+        </a>
+      </div>
+    </div>
+  }
+</div>

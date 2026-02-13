@@ -1,0 +1,108 @@
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1>Welcome to <span class="brand-text">OrderHub</span></h1>
+      <p>
+        Discover amazing products at unbeatable prices.
+        Fast delivery, secure checkout, and hassle-free returns.
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/products" class="btn btn-primary btn-lg">
+          Shop Now →
+        </a>
+        <a routerLink="/orders" class="btn btn-outline btn-lg">
+          Track Order
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES SECTION -->
+<section class="section container">
+  <h2 class="section-title">Shop by Category</h2>
+  <div class="categories-grid">
+    @for (category of categories(); track category.id) {
+      <a [routerLink]="['/products']"
+         [queryParams]="{category: category.id}"
+         class="category-card card card-hover">
+        <span class="category-icon">{{ category.icon }}</span>
+        <h3>{{ category.name }}</h3>
+        <p>{{ category.description }}</p>
+      </a>
+    }
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="section container">
+  <div class="section-header">
+    <h2 class="section-title">Featured Products</h2>
+    <a routerLink="/products" class="btn btn-outline btn-sm">
+      View All →
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-spinner"></div>
+  } @else {
+    <div class="grid grid-4">
+      @for (product of featuredProducts(); track product.id) {
+        <div class="product-card card card-hover">
+          @if (product.discount > 0) {
+            <span class="discount-tag">-{{ product.discount }}%</span>
+          }
+          <a [routerLink]="['/products', product.slug]">
+            <img [src]="product.image"
+                 [alt]="product.name"
+                 class="product-image" />
+          </a>
+          <div class="product-info">
+            <span class="product-category">{{ product.categoryName }}</span>
+            <a [routerLink]="['/products', product.slug]" class="product-name">
+              {{ product.name }}
+            </a>
+            <p class="product-desc">
+              {{ product.shortDescription | truncate:60 }}
+            </p>
+            <div class="product-rating">
+              <span class="star-rating">{{ product.rating | starRating }}</span>
+              <span class="review-count">({{ product.reviewCount }})</span>
+            </div>
+            <div class="product-price">
+              <span class="price">{{ product.price | appCurrency }}</span>
+              @if (product.originalPrice > product.price) {
+                <span class="original-price">
+                  {{ product.originalPrice | appCurrency }}
+                </span>
+              }
+            </div>
+            <button class="btn btn-primary btn-sm product-add-btn"
+                    (click)="addToCart(product)"
+                    [disabled]="product.stock === 0">
+              @if (product.stock === 0) {
+                Out of Stock
+              } @else {
+                Add to Cart
+              }
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <p>No featured products available.</p>
+        </div>
+      }
+    </div>
+  }
+</section>
+
+<!-- PROMO BANNER -->
+<section class="promo-banner container">
+  <div class="promo-content">
+    <h2>🚚 Free Shipping on Orders Over $100</h2>
+    <p>Order now and save on delivery costs!</p>
+    <a routerLink="/products" class="btn btn-primary">Start Shopping</a>
+  </div>
+</section>
