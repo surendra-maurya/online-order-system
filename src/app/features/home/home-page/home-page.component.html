@@ -1,6 +1,18 @@
 <!-- HERO SECTION -->
 <section class="hero">
   <div class="container">
+    <div class="theme-toggle-row">
+      <button
+        type="button"
+        class="theme-toggle"
+        (click)="toggleTheme()"
+        [attr.aria-pressed]="darkTheme()"
+        [attr.aria-label]="darkTheme() ? 'Switch to light theme' : 'Switch to dark theme'">
+        <span class="theme-toggle-icon">{{ darkTheme() ? '☀' : '☾' }}</span>
+        <span>{{ darkTheme() ? 'Light Mode' : 'Dark Mode' }}</span>
+      </button>
+    </div>
+
     <div class="hero-content">
       <h1>Welcome to <span class="brand-text">OnlineOrderHub</span></h1>
       <p>
